@@ -19,7 +19,7 @@ Build custom control panels with drag-and-drop widgets — buttons, joysticks, s
 # docker-compose.yml
 services:
   rch:
-    image: registry.rch.kwaad.cloud/rch:latest
+    image: ghcr.io/kwaadx/rch:latest
     ports:
       - "19580:19580"
     volumes:

@@ -1,6 +1,6 @@
 services:
   rch:
-    image: registry.rch.kwaad.cloud/rch:latest
+    image: ghcr.io/kwaadx/rch:latest
     ports:
       - "${RCH_WEB_PORT:-19580}:19580"
     volumes:
