@@ -74,24 +74,6 @@ docker exec -it rch python -m src.cli activate-user
 docker exec -it rch python -m src.cli deactivate-user
 ```
 
-## Configuration
-
-All settings are in `docker-compose.yml` → `environment` section.
-Commented-out variables show available options with defaults.
-
-### Custom Port
-
-```yaml
-ports:
-  - "8080:19580"
-```
-
-Or via shell variable:
-
-```bash
-RCH_WEB_PORT=8080 docker compose up -d
-```
-
 ## Environment Variables
 
 | Variable | Default | Description |
