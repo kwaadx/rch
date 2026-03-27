@@ -112,19 +112,3 @@ RCH_WEB_PORT=8080 docker compose up -d
 
 Docker volume at `/var/lib/rch` stores PostgreSQL and Redis data.
 Survives container restarts and image updates.
-
-## Update
-
-```bash
-docker compose pull
-docker compose up -d
-```
-
-## Troubleshooting
-
-```bash
-docker compose logs -f rch                                    # logs
-docker inspect --format='{{.State.Health.Status}}' rch        # health
-docker exec -it rch bash                                      # shell
-docker compose down -v && docker compose up -d                # ⚠️ reset (deletes data)
-```
