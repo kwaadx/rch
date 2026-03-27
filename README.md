@@ -44,14 +44,20 @@ Data is stored in the `rch_data` volume and survives container restarts and imag
 > cd rch && docker compose up -d
 > ```
 
+## Concepts
+
+- **Workspace** — isolated project environment; all resources belong to a workspace
+- **Screen** → **Page** → **Widget** — UI hierarchy; screens contain pages, pages contain widgets
+- **Widget** — UI control (button, joystick, slider, gauge, video, chart, etc.)
+- **Source** → **Endpoint** — device connection; source is the transport (REST / MQTT / ROS 2 / WebSocket), endpoints are individual channels
+- **Binding Group** → **Binding Mapping** — links widgets to endpoints for real-time data flow
+- **Roles** — `admin`, `editor`, `operator`, `viewer` — workspace-scoped permissions
+
 ## Default Credentials
 
 | User | Password |
 |------|----------|
 | `admin` | `admin` |
-| `editor` | `admin` |
-| `user` | `admin` |
-| `guest` | `admin` |
 
 > ⚠️ Change passwords after first login.
 
