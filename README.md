@@ -4,24 +4,19 @@ Web dashboard for controlling robots and IoT devices in real time.
 
 Build custom control panels with drag-and-drop widgets — buttons, joysticks, sliders, gauges, video streams, charts — and connect them to your devices via REST, MQTT, ROS 2, or WebSocket.
 
-**Key features:**
 - 18 widget types and growing (controls, displays, media, charts)
 - Bidirectional data binding with real-time updates
-- Multi-workspace, multi-user with role-based access (admin, editor, operator, viewer)
+- Multi-workspace, multi-user with role-based access
 - Works on desktop and mobile (PWA)
 - Single Docker image — runs anywhere
 
-## Status
-
-RCH is a young, actively developed project built by an enthusiast for enthusiasts. Feedback, ideas, and feature requests are welcome — open an issue or start a discussion.
-
-If you're considering RCH for production use — manufacturing floors, warehouses, lab automation, or any business environment — [let's talk](https://kwaad.cloud/). Security and stability are core priorities, and I'm open to collaboration on custom requirements.
+> RCH is actively developed. Feedback and ideas are welcome — open an issue or start a discussion.
+> For production use — [let's talk](https://kwaad.cloud/).
 
 ## Quick Start
 
-Add the service to your existing `docker-compose.yml`:
-
 ```yaml
+# docker-compose.yml
 services:
   rch:
     image: registry.rch.kwaad.cloud/rch:latest
@@ -41,11 +36,12 @@ docker compose up -d
 
 Open **http://localhost:19580** — done.
 
-> Or clone this repo for a ready-made setup with all configuration options:
+Data is stored in the `rch_data` volume and survives container restarts and image updates.
+
+> Or clone this repo for a ready-made setup:
 > ```bash
 > git clone https://github.com/kwaadx/rch.git
-> cd rch
-> docker compose up -d
+> cd rch && docker compose up -d
 > ```
 
 ## Default Credentials
@@ -58,21 +54,6 @@ Open **http://localhost:19580** — done.
 | `guest` | `admin` |
 
 > ⚠️ Change passwords after first login.
-
-## User Management
-
-All commands run inside the container:
-
-```bash
-docker exec rch python -m src.cli --help           # all commands
-docker exec rch python -m src.cli list-users        # list users
-docker exec -it rch python -m src.cli create-user   # create (interactive)
-docker exec -it rch python -m src.cli update-user   # update
-docker exec -it rch python -m src.cli delete-user --yes
-docker exec -it rch python -m src.cli reset-password
-docker exec -it rch python -m src.cli activate-user
-docker exec -it rch python -m src.cli deactivate-user
-```
 
 ## Environment Variables
 
@@ -90,7 +71,10 @@ docker exec -it rch python -m src.cli deactivate-user
 | `VAPID_CONTACT_EMAIL` | — | Push notifications |
 | `API_ENABLE_DOCS` | `false` | Enable Swagger UI at `/api/docs` |
 
-## Data Persistence
+## User Management
 
-Docker volume at `/var/lib/rch` stores PostgreSQL and Redis data.
-Survives container restarts and image updates.
+```bash
+docker exec rch python -m src.cli --help            # all commands
+docker exec -it rch python -m src.cli create-user    # create user (interactive)
+docker exec -it rch python -m src.cli reset-password # reset password
+```
