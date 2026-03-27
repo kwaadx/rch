@@ -1,0 +1,35 @@
+services:
+  rch:
+    image: registry.rch.kwaad.cloud/rch:latest
+    ports:
+      - "${RCH_WEB_PORT:-19580}:19580"
+    volumes:
+      - rch_data:/var/lib/rch
+    environment:
+      ## JWT (auto-generated and persisted if not set)
+      # JWT_SECRET_KEY: "your-secret-key"
+      # JWT_TOKEN_EXPIRE_MINUTES: "30"
+
+      ## Session
+      # SESSION_MAX_CONCURRENT: "5"
+      # SESSION_REFRESH_TOKEN_EXPIRE_DAYS: "30"
+
+      ## Cookie
+      COOKIE_SECURE: "false"        # true when behind HTTPS
+      COOKIE_SAMESITE: "Lax"
+      # COOKIE_DOMAIN: ""
+
+      ## Push Notifications (npx web-push generate-vapid-keys)
+      # VAPID_PUBLIC_KEY: ""
+      # VAPID_PRIVATE_KEY: ""
+      # VAPID_CONTACT_EMAIL: "mailto:admin@example.com"
+
+      ## Internal API Key (service-to-service auth)
+      # INTERNAL_API_KEY: ""
+
+      ## Docs
+      # API_ENABLE_DOCS: "true"
+    restart: unless-stopped
+
+volumes:
+  rch_data:
