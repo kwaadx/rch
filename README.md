@@ -43,8 +43,8 @@ Open **http://localhost:19580** — done.
 
 > Or clone this repo for a ready-made setup with all configuration options:
 > ```bash
-> git clone https://github.com/kwaad-cloud/rch-quickstart.git
-> cd rch-quickstart
+> git clone https://github.com/kwaadx/rch.git
+> cd rch
 > docker compose up -d
 > ```
 
