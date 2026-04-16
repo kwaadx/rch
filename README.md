@@ -1,4 +1,4 @@
-# RCH — Robo Control Hub
+# RCH — Realtime Control Hub
 
 Web dashboard for controlling robots and IoT devices in real time.
 
