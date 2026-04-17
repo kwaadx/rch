@@ -13,7 +13,7 @@ Build custom control panels with drag-and-drop widgets — buttons, joysticks, s
 > RCH is actively developed. Feedback and ideas are welcome — open an issue or start a discussion.
 > For production use — [let's talk](https://kwaad.cloud/).
 
-![RCH Dashboard](screenshots/usage_1.png)
+![RCH Dashboard](docs/images/getting-started-dashboard.png)
 
 ## Quick Start
 
