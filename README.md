@@ -4,7 +4,7 @@ Web dashboard for controlling robots and IoT devices in real time.
 
 Build custom control panels with drag-and-drop widgets — buttons, joysticks, sliders, gauges, video streams, charts — and connect them to your devices via REST, MQTT, ROS 2, or WebSocket.
 
-- 18 widget types and growing (controls, displays, media, charts)
+- 43 widget types (controls, displays, media, charts)
 - Bidirectional data binding with real-time updates
 - Multi-workspace, multi-user with role-based access
 - Works on desktop and mobile (PWA)
@@ -12,6 +12,8 @@ Build custom control panels with drag-and-drop widgets — buttons, joysticks, s
 
 > RCH is actively developed. Feedback and ideas are welcome — open an issue or start a discussion.
 > For production use — [let's talk](https://kwaad.cloud/).
+
+![RCH Dashboard](screenshots/usage_1.png)
 
 ## Quick Start
 
