@@ -1,19 +1,32 @@
 # RCH — Realtime Control Hub
 
-Web dashboard for controlling robots and IoT devices in real time.
+**Self-hosted control dashboard for robotics and IoT. Zero frontend code required.**
 
-Build custom control panels with drag-and-drop widgets — buttons, joysticks, sliders, gauges, video streams, charts — and connect them to your devices via REST, MQTT, ROS 2, or WebSocket.
+You build the backend — MQTT brokers, REST APIs, WebSocket streams, ROS 2 nodes. RCH gives you the control panel: drag widgets onto pages, bind them to your endpoints, and have a production-ready dashboard in minutes instead of weeks.
 
-- 43 widget types (controls, displays, media, charts)
-- Bidirectional data binding with real-time updates
-- Multi-workspace, multi-user with role-based access
-- Works on desktop and mobile (PWA)
-- Single Docker image — runs anywhere
+Free and open-source. MIT licensed. One Docker command.
 
-> RCH is actively developed. Feedback and ideas are welcome — open an issue or start a discussion.
-> For production use — [let's talk](https://kwaad.cloud/).
+🌐 [Live Demo](https://demo.rch.kwaad.cloud) · 🏠 [Website](https://rch.kwaad.cloud) · 💬 [Feedback](https://github.com/kwaadx/rch/issues)
 
 ![RCH Dashboard](docs/images/getting-started-dashboard.png)
+
+## Why RCH
+
+- **43 widget types** — buttons, joysticks, sliders, gauges, video streams, charts, data tables, and more
+- **4 protocol connectors** — REST, MQTT, WebSocket, ROS 2 in one dashboard
+- **13 data transforms** — scale, deadzone, lowpass filter, clamp, map_range, chain them together
+- **ACK-confirmed commands** — know your hardware actually executed the command (fire / ack / submit modes)
+- **RBAC** — admin, editor, operator, viewer — workspace-scoped. Operators can't break config.
+- **13 languages**, PWA, works on desktop and mobile
+- **Self-hosted** — your data stays on your network. No cloud, no subscription, no telemetry.
+
+## Who Is This For
+
+**Hardware hobbyists** — You have a Raspberry Pi project with MQTT endpoints and an ugly `index.html` with one button. RCH replaces weeks of frontend work with 15 minutes of configuration.
+
+**Students & educators** — Your TurtleBot drives but you need a proper control panel for the demo, not a terminal with ROS topics. Set up in 15 minutes, looks professional.
+
+**Small businesses** — Your operator needs to press "Water" on a tablet and see confirmation. You need RBAC, audit logs, and ACK — without hiring a frontend developer.
 
 ## Quick Start
 
@@ -86,3 +99,10 @@ docker exec rch python -m src.cli --help            # all commands
 docker exec -it rch python -m src.cli create-user    # create user (interactive)
 docker exec -it rch python -m src.cli reset-password # reset password
 ```
+
+## License
+
+MIT — free for personal and commercial use.
+
+> RCH is actively developed by a solo developer. Feedback and ideas are welcome — open an issue or start a discussion.
+> For custom widget development — [let's talk](https://rch.kwaad.cloud/).
