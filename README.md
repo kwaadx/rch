@@ -6,7 +6,7 @@ You build the backend — MQTT brokers, REST APIs, WebSocket streams, ROS 2 node
 
 Free and open-source. MIT licensed. One Docker command.
 
-🌐 [Live Demo](https://demo.rch.kwaad.cloud) · 🏠 [Website](https://rch.kwaad.cloud) · 💬 [Feedback](https://github.com/kwaadx/rch/issues)
+🌐 [Live Demo](https://demo.rch.kwaad.cloud) · 🏠 [Website](https://rch.kwaad.cloud) · 💬 [Discord](https://discord.gg/ptCvyXAAnV) · 📝 [Issues](https://github.com/kwaadx/rch/issues)
 
 ![RCH Dashboard](docs/images/getting-started-dashboard.png)
 
