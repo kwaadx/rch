@@ -14,6 +14,7 @@ Free and open-source. MIT licensed. One Docker command.
 
 - **43 widget types** — buttons, joysticks, sliders, gauges, video streams, charts, data tables, and more
 - **4 protocol connectors** — REST, MQTT, WebSocket, ROS 2 in one dashboard
+- **AI-powered setup (MCP)** — built into the image; connect Kiro, Claude, Cursor, Windsurf, or Continue.dev and build dashboards through natural language
 - **13 data transforms** — scale, deadzone, lowpass filter, clamp, map_range, chain them together
 - **ACK-confirmed commands** — know your hardware actually executed the command (fire / ack / submit modes)
 - **RBAC** — admin, editor, operator, viewer — workspace-scoped. Operators can't break config.
@@ -91,6 +92,70 @@ Data is stored in the `rch_data` volume and survives container restarts and imag
 | `VAPID_PRIVATE_KEY` | — | Push notifications |
 | `VAPID_CONTACT_EMAIL` | — | Push notifications |
 | `API_ENABLE_DOCS` | `false` | Enable Swagger UI at `/api/docs` |
+
+## AI Integration (MCP)
+
+RCH ships with a built-in [MCP server](https://modelcontextprotocol.io/) — no separate install, no extra process to run. Generate a key in the UI and paste the config into your AI tool.
+
+**Supported clients:** Kiro CLI, Claude Code, Claude Desktop, Cursor, Windsurf, Continue.dev, VS Code (Copilot Chat).
+
+### Three steps
+
+**1. Generate an API key**
+
+Sidebar → **API Keys** → **Create Key**. Pick a scope (`Dashboard Management` is a good default) and copy the key. It's shown only once.
+
+**2. Paste the config**
+
+The Create Key dialog shows ready-made snippets for every supported client. For Kiro / Cursor / Windsurf / Continue.dev:
+
+```json
+{
+  "mcpServers": {
+    "rch": {
+      "url": "http://localhost:19580/mcp",
+      "headers": {
+        "Authorization": "Bearer rch_pat_..."
+      }
+    }
+  }
+}
+```
+
+For Claude Code:
+
+```bash
+claude mcp add --transport http rch http://localhost:19580/mcp \
+  --header "Authorization: Bearer rch_pat_..."
+```
+
+For Claude Desktop (uses the [`mcp-remote`](https://www.npmjs.com/package/mcp-remote) shim since Desktop is stdio-only):
+
+```json
+{
+  "mcpServers": {
+    "rch": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "http://localhost:19580/mcp",
+        "--header",
+        "Authorization:Bearer rch_pat_..."
+      ]
+    }
+  }
+}
+```
+
+**3. Ask**
+
+> *"Create a temperature gauge bound to my MQTT topic `sensors/temp` on broker `mqtt://192.168.1.100`."*
+
+The AI handles widget creation, source setup, and bindings automatically.
+
+**37 tools** cover workspaces, widgets, sources/endpoints, bindings, payload discovery, and monitoring.
+
+Set `MCP_ENABLE=false` in `docker-compose.yml` to disable the bundled MCP server.
 
 ## User Management
 
