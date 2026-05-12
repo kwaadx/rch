@@ -29,6 +29,12 @@ services:
 
       ## Docs
       # API_ENABLE_DOCS: "true"
+
+      ## MCP Server (AI assistant bridge)
+      # Exposes Streamable HTTP MCP endpoint at /mcp. Generate an API key
+      # in the RCH UI (sidebar → API Keys → Create Key), then paste the
+      # URL + key into your AI tool's MCP config. Set to "false" to disable.
+      MCP_ENABLE: "true"
     restart: unless-stopped
 
 volumes:
