@@ -12,7 +12,7 @@ Free and open-source. MIT licensed. One Docker command.
 
 ## Why RCH
 
-- **43 widget types** — buttons, joysticks, sliders, gauges, video streams, charts, data tables, and more
+- **42 widget types** — buttons, joysticks, sliders, gauges, video streams, charts, data tables, and more
 - **4 protocol connectors** — REST, MQTT, WebSocket, ROS 2 in one dashboard
 - **AI-powered setup (MCP)** — built into the image; connect Kiro, Claude, Cursor, Windsurf, or Continue.dev and build dashboards through natural language
 - **13 data transforms** — scale, deadzone, lowpass filter, clamp, map_range, chain them together
