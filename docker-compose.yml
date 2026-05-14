@@ -19,6 +19,14 @@ services:
       COOKIE_SAMESITE: "Lax"
       # COOKIE_DOMAIN: ""
 
+      ## CORS (defaults to http://localhost:19580; set to your domain when behind reverse proxy)
+      # CORS_ORIGINS: "https://dashboard.example.com"
+
+      ## Log retention (auto-cleanup old entries)
+      # AUDIT_RETENTION_DAYS: "90"
+      # INTEGRATION_LOG_RETENTION_DAYS: "7"
+      # SYSTEM_LOG_RETENTION_DAYS: "30"
+
       ## Push Notifications (npx web-push generate-vapid-keys)
       # VAPID_PUBLIC_KEY: ""
       # VAPID_PRIVATE_KEY: ""

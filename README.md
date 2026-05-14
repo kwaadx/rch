@@ -88,6 +88,10 @@ Data is stored in the `rch_data` volume and survives container restarts and imag
 | `JWT_TOKEN_EXPIRE_MINUTES` | `30` | Access token TTL |
 | `SESSION_MAX_CONCURRENT` | `5` | Max sessions per user |
 | `SESSION_REFRESH_TOKEN_EXPIRE_DAYS` | `30` | Refresh token TTL |
+| `AUDIT_RETENTION_DAYS` | `90` | Days to keep audit log entries (1–365) |
+| `INTEGRATION_LOG_RETENTION_DAYS` | `7` | Days to keep integration log entries (1–90) |
+| `SYSTEM_LOG_RETENTION_DAYS` | `30` | Days to keep system log entries (1–365) |
+| `CORS_ORIGINS` | `http://localhost:19580` | Allowed origins (comma-separated) |
 | `VAPID_PUBLIC_KEY` | — | Push notifications |
 | `VAPID_PRIVATE_KEY` | — | Push notifications |
 | `VAPID_CONTACT_EMAIL` | — | Push notifications |
@@ -196,6 +200,24 @@ The AI handles widget creation, source setup, and bindings automatically.
 **37 tools** cover workspaces, widgets, sources/endpoints, bindings, payload discovery, and monitoring.
 
 Set `MCP_ENABLE=false` in `docker-compose.yml` to disable the bundled MCP server.
+
+## Backup & Restore
+
+Create a backup (PostgreSQL dump + Redis snapshot):
+
+```bash
+docker exec rch /usr/local/bin/backup.sh
+```
+
+Backups are saved to `/var/lib/rch/backups/` (inside the data volume). Old backups are auto-pruned after 7 days.
+
+To restore from a backup:
+
+```bash
+docker exec rch bash -c 'gunzip -c /var/lib/rch/backups/pg_YYYYMMDD_HHMMSS.sql.gz | \
+  PGPASSWORD=$(cat /var/lib/rch/.postgres_password) \
+  /usr/lib/postgresql/17/bin/psql -h localhost -U rch -d rch'
+```
 
 ## User Management
 
