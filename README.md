@@ -93,6 +93,46 @@ Data is stored in the `rch_data` volume and survives container restarts and imag
 | `VAPID_CONTACT_EMAIL` | — | Push notifications |
 | `API_ENABLE_DOCS` | `false` | Enable Swagger UI at `/api/docs` |
 
+## Monitoring (Prometheus)
+
+RCH exposes a `/metrics` endpoint in Prometheus format on the internal API port (19500). It is **not** exposed publicly — only accessible from within the Docker network.
+
+To scrape metrics from a Prometheus/Grafana stack running in the same Docker network:
+
+```yaml
+# prometheus.yml
+scrape_configs:
+  - job_name: rch
+    static_configs:
+      - targets: ['rch:19500']
+    metrics_path: /metrics
+```
+
+Make sure both containers share a Docker network:
+
+```yaml
+services:
+  rch:
+    image: ghcr.io/kwaadx/rch:latest
+    networks: [monitoring]
+  prometheus:
+    image: prom/prometheus
+    networks: [monitoring]
+
+networks:
+  monitoring:
+```
+
+**Available metrics:**
+- `rch_realtime_connections_active` — active WebSocket connections
+- `rch_realtime_messages_total` — WS messages by direction and type
+- `rch_source_connector_state` — connector status (1 = connected, 0 = down)
+- `rch_auth_login_attempts_total` — login attempts by outcome
+- `http_requests_total` — HTTP requests by handler, method, status
+- `http_request_duration_seconds` — request latency histogram
+
+Set `METRICS_ENABLED=false` to disable the endpoint entirely.
+
 ## AI Integration (MCP)
 
 RCH ships with a built-in [MCP server](https://modelcontextprotocol.io/) — no separate install, no extra process to run. Generate a key in the UI and paste the config into your AI tool.
