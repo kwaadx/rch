@@ -35,7 +35,8 @@ Free and open-source. MIT licensed. One Docker command.
 # docker-compose.yml
 services:
   rch:
-    image: ghcr.io/kwaadx/rch:latest
+    image: ghcr.io/kwaadx/rch:latest        # amd64 (Intel/AMD)
+    # image: ghcr.io/kwaadx/rch:latest-arm64 # arm64 (Jetson, Raspberry Pi)
     ports:
       - "19580:19580"
     volumes:
@@ -45,6 +46,13 @@ services:
 volumes:
   rch_data:
 ```
+
+### Platform Images
+
+| Architecture | Image Tag | Devices |
+|---|---|---|
+| **amd64** (x86_64) | `ghcr.io/kwaadx/rch:latest` | Desktop, server, cloud VMs |
+| **arm64** (aarch64) | `ghcr.io/kwaadx/rch:latest-arm64` | Jetson Orin/Nano, Raspberry Pi 4/5 |
 
 ```bash
 docker compose up -d
