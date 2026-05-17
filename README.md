@@ -96,6 +96,15 @@ Data is stored in the `rch_data` volume and survives container restarts and imag
 | `RCH_VAPID_PRIVATE_KEY` | — | Push notifications |
 | `RCH_VAPID_CONTACT_EMAIL` | — | Push notifications |
 | `RCH_API_ENABLE_DOCS` | `false` | Enable Swagger UI at `/api/docs` |
+| `RCH_MCP_ENABLE` | `true` | Enable MCP server at `/mcp` |
+| `RCH_LOG_LEVEL` | *(auto)* | Override log level (`DEBUG` / `INFO` / `WARNING` / `ERROR`) |
+| `RCH_API_WORKERS` | `1` | Uvicorn worker count (>1 requires `RCH_BINDING_STATE_BACKEND=redis`) |
+| `RCH_SKIP_SEED` | — | Set `true` to skip Getting Started demo data on first run |
+| `RCH_POSTGRES_PASSWORD` | *(auto)* | PostgreSQL password (auto-generated, persisted in volume) |
+| `RCH_DATABASE_URL` | *(internal)* | External PostgreSQL URL (overrides built-in) |
+| `RCH_REDIS_URL` | *(internal)* | External Redis URL (overrides built-in) |
+| `RCH_TRUSTED_PROXIES` | — | Reverse proxy CIDR (e.g. `172.16.0.0/12`) |
+| `RCH_DEMO_MODE` | `false` | Read-only mode (blocks all mutations) |
 
 ## Monitoring (Prometheus)
 
