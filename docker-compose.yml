@@ -72,6 +72,15 @@ services:
       # RCH_PASSWORD_MIN_LENGTH: "8"
 
       ## ─── Performance Tuning ───────────────────────────────────────────
+      ## API workers (default 1; increase for multi-core, requires RCH_BINDING_STATE_BACKEND=redis)
+      # RCH_API_WORKERS: "1"
+
+      ## Log level override (DEBUG, INFO, WARNING, ERROR)
+      # RCH_LOG_LEVEL: "WARNING"
+
+      ## Skip Getting Started seed on first run
+      # RCH_SKIP_SEED: "true"
+
       ## Connector demand-aware lifecycle
       # RCH_REST_BACKGROUND_MIN_POLL_INTERVAL_MS: "1000"
       # RCH_MQTT_BACKGROUND_ENABLED: "on"       # "off" = defer until UI subscriber
