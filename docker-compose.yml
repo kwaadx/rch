@@ -6,43 +6,89 @@ services:
     volumes:
       - rch_data:/var/lib/rch
     environment:
-      ## JWT (auto-generated and persisted if not set)
-      # JWT_SECRET_KEY: "your-secret-key"
-      # JWT_TOKEN_EXPIRE_MINUTES: "30"
+      ## ─── Authentication ───────────────────────────────────────────────
+      ## JWT secret (auto-generated and persisted in volume if not set)
+      # RCH_JWT_SECRET_KEY: "your-secret-key"
+      # RCH_JWT_TOKEN_EXPIRE_MINUTES: "30"
 
       ## Session
-      # SESSION_MAX_CONCURRENT: "5"
-      # SESSION_REFRESH_TOKEN_EXPIRE_DAYS: "30"
+      # RCH_SESSION_MAX_CONCURRENT: "5"
+      # RCH_SESSION_REFRESH_TOKEN_EXPIRE_DAYS: "30"
 
       ## Cookie
-      COOKIE_SECURE: "false"        # true when behind HTTPS
-      COOKIE_SAMESITE: "Lax"
-      # COOKIE_DOMAIN: ""
+      RCH_COOKIE_SECURE: "false"        # true when behind HTTPS
+      RCH_COOKIE_SAMESITE: "Lax"
+      # RCH_COOKIE_DOMAIN: ""
 
+      ## ─── Networking ───────────────────────────────────────────────────
       ## CORS (defaults to http://localhost:19580; set to your domain when behind reverse proxy)
-      # CORS_ORIGINS: "https://dashboard.example.com"
+      # RCH_CORS_ORIGINS: "https://dashboard.example.com"
 
-      ## Log retention (auto-cleanup old entries)
-      # AUDIT_RETENTION_DAYS: "90"
-      # INTEGRATION_LOG_RETENTION_DAYS: "7"
-      # SYSTEM_LOG_RETENTION_DAYS: "30"
+      ## Trusted reverse proxy IPs (CIDR notation, comma-separated)
+      # RCH_TRUSTED_PROXIES: "172.16.0.0/12"
 
-      ## Push Notifications (npx web-push generate-vapid-keys)
-      # VAPID_PUBLIC_KEY: ""
-      # VAPID_PRIVATE_KEY: ""
-      # VAPID_CONTACT_EMAIL: "mailto:admin@example.com"
+      ## ─── Database & Redis ─────────────────────────────────────────────
+      ## PostgreSQL password (auto-generated and persisted if not set)
+      # RCH_POSTGRES_PASSWORD: "your-secure-password"
 
-      ## Internal API Key (service-to-service auth)
-      # INTERNAL_API_KEY: ""
+      ## External database (overrides built-in PostgreSQL)
+      # RCH_DATABASE_URL: "postgresql://user:pass@host:5432/rch"
 
-      ## Docs
-      # API_ENABLE_DOCS: "true"
+      ## External Redis (overrides built-in Redis)
+      # RCH_REDIS_URL: "redis://:password@host:6379/0"
+
+      ## ─── Log Retention ────────────────────────────────────────────────
+      # RCH_AUDIT_RETENTION_DAYS: "90"
+      # RCH_INTEGRATION_LOG_RETENTION_DAYS: "7"
+      # RCH_SYSTEM_LOG_RETENTION_DAYS: "30"
+
+      ## ─── Push Notifications ───────────────────────────────────────────
+      ## Generate keys: npx web-push generate-vapid-keys
+      # RCH_VAPID_PUBLIC_KEY: ""
+      # RCH_VAPID_PRIVATE_KEY: ""
+      # RCH_VAPID_CONTACT_EMAIL: "mailto:admin@example.com"
+
+      ## ─── API & MCP ────────────────────────────────────────────────────
+      ## Internal API key (service-to-service auth)
+      # RCH_INTERNAL_API_KEY: ""
+
+      ## Swagger/OpenAPI docs
+      # RCH_API_ENABLE_DOCS: "true"
 
       ## MCP Server (AI assistant bridge)
-      # Exposes Streamable HTTP MCP endpoint at /mcp. Generate an API key
-      # in the RCH UI (sidebar → API Keys → Create Key), then paste the
-      # URL + key into your AI tool's MCP config. Set to "false" to disable.
-      MCP_ENABLE: "true"
+      ## Exposes Streamable HTTP MCP endpoint at /mcp. Generate an API key
+      ## in the RCH UI (sidebar → API Keys → Create Key), then paste the
+      ## URL + key into your AI tool's MCP config. Set to "false" to disable.
+      RCH_MCP_ENABLE: "true"
+      # RCH_MCP_PUBLIC_URL: "https://your-domain.com/mcp"
+
+      ## ─── Security ─────────────────────────────────────────────────────
+      ## Brute-force protection
+      # RCH_LOCKOUT_MAX_ATTEMPTS: "5"
+      # RCH_LOCKOUT_DURATION_MINUTES: "15"
+      # RCH_LOCKOUT_ENABLED: "true"
+
+      ## Password policy
+      # RCH_PASSWORD_MIN_LENGTH: "8"
+
+      ## ─── Performance Tuning ───────────────────────────────────────────
+      ## Connector demand-aware lifecycle
+      # RCH_REST_BACKGROUND_MIN_POLL_INTERVAL_MS: "1000"
+      # RCH_MQTT_BACKGROUND_ENABLED: "on"       # "off" = defer until UI subscriber
+      # RCH_WS_BACKGROUND_ENABLED: "on"
+      # RCH_ROS2_BACKGROUND_ENABLED: "on"
+
+      ## Database pool
+      # RCH_DB_POOL_MIN: "5"
+      # RCH_DB_POOL_MAX: "20"
+
+      ## ─── Observability ────────────────────────────────────────────────
+      # RCH_SENTRY_DSN: ""
+      # RCH_METRICS_ENABLED: "true"
+
+      ## ─── Demo Mode ────────────────────────────────────────────────────
+      ## Read-only mode (blocks all mutations via API)
+      # RCH_DEMO_MODE: "true"
     restart: unless-stopped
 
 volumes:
