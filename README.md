@@ -81,21 +81,21 @@ Data is stored in the `rch_data` volume and survives container restarts and imag
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `COOKIE_SECURE` | `false` | `true` when behind HTTPS |
-| `COOKIE_SAMESITE` | `Lax` | `Lax` / `Strict` / `None` |
-| `COOKIE_DOMAIN` | *(auto)* | Cookie domain override |
-| `JWT_SECRET_KEY` | *(auto)* | Auto-generated, persisted in volume |
-| `JWT_TOKEN_EXPIRE_MINUTES` | `30` | Access token TTL |
-| `SESSION_MAX_CONCURRENT` | `5` | Max sessions per user |
-| `SESSION_REFRESH_TOKEN_EXPIRE_DAYS` | `30` | Refresh token TTL |
-| `AUDIT_RETENTION_DAYS` | `90` | Days to keep audit log entries (1–365) |
-| `INTEGRATION_LOG_RETENTION_DAYS` | `7` | Days to keep integration log entries (1–90) |
-| `SYSTEM_LOG_RETENTION_DAYS` | `30` | Days to keep system log entries (1–365) |
-| `CORS_ORIGINS` | `http://localhost:19580` | Allowed origins (comma-separated) |
-| `VAPID_PUBLIC_KEY` | — | Push notifications |
-| `VAPID_PRIVATE_KEY` | — | Push notifications |
-| `VAPID_CONTACT_EMAIL` | — | Push notifications |
-| `API_ENABLE_DOCS` | `false` | Enable Swagger UI at `/api/docs` |
+| `RCH_COOKIE_SECURE` | `false` | `true` when behind HTTPS |
+| `RCH_COOKIE_SAMESITE` | `Lax` | `Lax` / `Strict` / `None` |
+| `RCH_COOKIE_DOMAIN` | *(auto)* | Cookie domain override |
+| `RCH_JWT_SECRET_KEY` | *(auto)* | Auto-generated, persisted in volume |
+| `RCH_JWT_TOKEN_EXPIRE_MINUTES` | `30` | Access token TTL |
+| `RCH_SESSION_MAX_CONCURRENT` | `5` | Max sessions per user |
+| `RCH_SESSION_REFRESH_TOKEN_EXPIRE_DAYS` | `30` | Refresh token TTL |
+| `RCH_AUDIT_RETENTION_DAYS` | `90` | Days to keep audit log entries (1–365) |
+| `RCH_INTEGRATION_LOG_RETENTION_DAYS` | `7` | Days to keep integration log entries (1–90) |
+| `RCH_SYSTEM_LOG_RETENTION_DAYS` | `30` | Days to keep system log entries (1–365) |
+| `RCH_CORS_ORIGINS` | `http://localhost:19580` | Allowed origins (comma-separated) |
+| `RCH_VAPID_PUBLIC_KEY` | — | Push notifications |
+| `RCH_VAPID_PRIVATE_KEY` | — | Push notifications |
+| `RCH_VAPID_CONTACT_EMAIL` | — | Push notifications |
+| `RCH_API_ENABLE_DOCS` | `false` | Enable Swagger UI at `/api/docs` |
 
 ## Monitoring (Prometheus)
 
@@ -199,7 +199,7 @@ The AI handles widget creation, source setup, and bindings automatically.
 
 **37 tools** cover workspaces, widgets, sources/endpoints, bindings, payload discovery, and monitoring.
 
-Set `MCP_ENABLE=false` in `docker-compose.yml` to disable the bundled MCP server.
+Set `RCH_MCP_ENABLE=false` in `docker-compose.yml` to disable the bundled MCP server.
 
 ## Backup & Restore
 
