@@ -113,6 +113,17 @@ Data is stored in the `rch_data` volume and survives container restarts and imag
 | `RCH_REDIS_URL` | *(internal)* | External Redis URL (overrides built-in) |
 | `RCH_TRUSTED_PROXIES` | — | Reverse proxy CIDR (e.g. `172.16.0.0/12`) |
 | `RCH_DEMO_MODE` | `false` | Read-only mode (blocks all mutations) |
+| `RCH_MODE` | `dev` | Runtime mode: `dev`, `prod`, or `test` |
+| `RCH_ALLOW_PRIVATE_HOSTS` | `true` | Allow source connections to private IPs (192.168.x.x, 10.x.x) |
+| `RCH_LOCKOUT_ENABLED` | `true` | Enable account lockout after failed logins |
+| `RCH_LOCKOUT_MAX_ATTEMPTS` | `5` | Failed attempts before lockout |
+| `RCH_LOCKOUT_DURATION_MINUTES` | `15` | Lockout duration |
+| `RCH_PASSWORD_MIN_LENGTH` | `8` | Minimum password length |
+| `RCH_JWT_PREVIOUS_SECRET_KEY` | — | Previous JWT key (for zero-downtime rotation) |
+| `RCH_MQTT_BACKGROUND_ENABLED` | `on` | `off` to keep MQTT always connected |
+| `RCH_WS_BACKGROUND_ENABLED` | `on` | `off` to keep WebSocket always connected |
+| `RCH_ROS2_BACKGROUND_ENABLED` | `on` | `off` to keep ROS2 always connected |
+| `RCH_INTERNAL_API_KEY` | — | Service-to-service key for push notifications |
 
 ## Monitoring (Prometheus)
 
@@ -236,13 +247,41 @@ docker exec rch bash -c 'gunzip -c /var/lib/rch/backups/pg_YYYYMMDD_HHMMSS.sql.g
   /usr/lib/postgresql/17/bin/psql -h localhost -U rch -d rch'
 ```
 
-## User Management
+## User Management (CLI)
 
 ```bash
-docker exec rch python -m src.cli --help            # all commands
-docker exec -it rch python -m src.cli create-user    # create user (interactive)
-docker exec -it rch python -m src.cli reset-password # reset password
+docker exec rch python -m src.cli --help              # show all commands
+docker exec -it rch python -m src.cli create-user     # create user (interactive)
+docker exec -it rch python -m src.cli reset-password  # reset password
+docker exec -it rch python -m src.cli delete-user     # delete user
+docker exec -it rch python -m src.cli update-user     # update name
+docker exec -it rch python -m src.cli activate-user   # re-enable account
+docker exec -it rch python -m src.cli deactivate-user # disable account
+docker exec rch python -m src.cli list-users          # list all users (non-interactive)
 ```
+
+> **Note:** Interactive commands require `-it` flags. `list-users` works without them.
+
+## Supported Languages
+
+Arabic, Chinese (Simplified), English, French, German, Hindi, Italian, Japanese, Korean, Polish, Portuguese (Brazil), Spanish, Ukrainian.
+
+Change language in the sidebar → Settings → Language.
+
+## Documentation
+
+- [Getting Started](docs/getting-started.md) — zero to live data in 10 minutes
+- [Widget Catalog](docs/widgets.md) — all 42 widget types with ports
+- [Bindings Guide](docs/bindings.md) — connecting widgets to data (directions, payload_path, history, ACK)
+- [Data Transforms](docs/transforms.md) — scale, map, filter incoming data
+- [API Keys](docs/api-keys.md) — scopes, creation, rotation
+- [Workspace Sharing](docs/workspace-sharing.md) — invite members, assign roles
+- [RTSP Stream Proxy](docs/rtsp-proxy.md) — view IP cameras in the browser
+- [Security](docs/security.md) — lockout, password policy, JWT rotation
+- [Upgrading](docs/upgrading.md) — how to update to a new version
+- [Reverse Proxy](docs/reverse-proxy.md) — HTTPS with Caddy/Nginx/Traefik
+- [Push Notifications](docs/push-notifications.md) — alerts when you're away
+- **Examples:** [MQTT + ESP32](docs/examples/mqtt-temperature.md) · [ROS2 TurtleBot](docs/examples/ros2-turtlebot.md) · [REST Polling](docs/examples/rest-api-polling.md)
 
 ## License
 
