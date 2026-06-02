@@ -10,6 +10,8 @@ Free and open-source. MIT licensed. One Docker command.
 
 ![RCH Dashboard](docs/images/getting-started-dashboard.png)
 
+<video src="demo.mp4" controls width="100%"></video>
+
 ## Why RCH
 
 - **42 widget types** — buttons, joysticks, sliders, gauges, video streams, charts, data tables, and more
