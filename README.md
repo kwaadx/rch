@@ -10,9 +10,8 @@ Free and open-source. MIT licensed. One Docker command.
 
 ![RCH Dashboard](docs/images/getting-started-dashboard.png)
 
-<!-- DEMO VIDEO: drag-drop demo.mp4 into GitHub editor to get the embed URL, then:
-<video src="https://github.com/user-attachments/assets/YOUR-ID-HERE" controls width="600"></video>
--->
+
+![RCH Demo](demo.gif)
 
 ## Why RCH
 
