@@ -126,6 +126,8 @@ Data is stored in the `rch_data` volume and survives container restarts and imag
 | `RCH_WS_BACKGROUND_ENABLED` | `on` | `off` to keep WebSocket always connected |
 | `RCH_ROS2_BACKGROUND_ENABLED` | `on` | `off` to keep ROS2 always connected |
 | `RCH_INTERNAL_API_KEY` | — | Service-to-service key for push notifications |
+| `RCH_MEMPROF_ENABLED` | `false` | Enable the built-in memory profiler (see [Memory Profiling](#memory-profiling)) |
+| `RCH_MEMPROF_TOKEN` | — | Shared secret required to reach the `/api/debug/memory/*` routes in production |
 
 ## Monitoring (Prometheus)
 
@@ -166,6 +168,59 @@ networks:
 - `http_request_duration_seconds` — request latency histogram
 
 Set `METRICS_ENABLED=false` to disable the endpoint entirely.
+
+## Memory Profiling
+
+RCH ships with an **opt-in** memory profiler for diagnosing slow memory growth
+on long-running or resource-constrained deployments (e.g. an edge box). It is
+**completely inert unless enabled** — when off, it adds no overhead and exposes
+no routes, so it is safe to leave in the production image.
+
+Enable it by setting two environment variables and restarting the container:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `RCH_MEMPROF_ENABLED` | `false` | `true` / `1` to turn the profiler on |
+| `RCH_MEMPROF_TOKEN` | — | Shared secret; required to reach the debug routes in production |
+
+Optional tuning (sensible defaults — change only if needed):
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `RCH_MEMPROF_INTERVAL_S` | `300` | Seconds between automatic samples |
+| `RCH_MEMPROF_SINKS` | `stdout,redis` | Where samples are written: `stdout`, `redis`, `file` |
+| `RCH_MEMPROF_TOP_N` | `25` | Number of top allocation sites reported |
+| `RCH_MEMPROF_HISTORY` | `50` | Recent samples kept in memory for the `/history` route |
+
+Once enabled, the profiler samples periodically (process RSS, GC stats,
+internal structure sizes, hot-path activity counters, and top allocation
+sites). Read the data via:
+
+| Route | Purpose |
+|-------|---------|
+| `GET /api/debug/memory/status` | Profiler state + configuration at a glance |
+| `GET /api/debug/memory/snapshot` | Take a sample immediately |
+| `GET /api/debug/memory/history?limit=N` | Recent samples (newest last) |
+| `GET /api/debug/memory/redis?limit=N` | Dump the persisted Redis sample list |
+| `GET /api/debug/memory/reset-baseline` | Re-anchor growth tracking to *now* (call after warm-up) |
+
+All routes require `?token=<RCH_MEMPROF_TOKEN>` when a token is configured
+(mandatory in production; in `dev`/`test` mode the routes are open if no token
+is set).
+
+```bash
+# enable in the container env, then restart
+RCH_MEMPROF_ENABLED=1
+RCH_MEMPROF_TOKEN=<your-secret>
+
+# after warm-up, re-anchor and then watch the trend
+curl "http://localhost:19580/api/debug/memory/reset-baseline?token=<your-secret>"
+curl "http://localhost:19580/api/debug/memory/history?token=<your-secret>&limit=30"
+```
+
+> **Note:** the profiler uses Python's `tracemalloc`, which adds measurable CPU
+> overhead while enabled. Use it to diagnose an issue, then set
+> `RCH_MEMPROF_ENABLED=0` and restart for full performance in steady state.
 
 ## AI Integration (MCP)
 

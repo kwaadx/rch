@@ -98,6 +98,13 @@ services:
       # RCH_SENTRY_DSN: ""
       # RCH_METRICS_ENABLED: "true"
 
+      ## Memory profiler (opt-in; inert unless enabled). See README → Memory Profiling.
+      ## Routes: /api/debug/memory/{status,snapshot,history,redis,reset-baseline}
+      # RCH_MEMPROF_ENABLED: "1"           # turn the profiler on
+      # RCH_MEMPROF_TOKEN: "change-me"     # required to reach debug routes in prod
+      # RCH_MEMPROF_INTERVAL_S: "300"      # seconds between samples
+      # RCH_MEMPROF_SINKS: "stdout,redis"  # stdout | redis | file
+
       ## ─── Demo Mode ────────────────────────────────────────────────────
       ## Read-only mode (blocks all mutations via API)
       # RCH_DEMO_MODE: "true"
