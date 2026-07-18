@@ -128,6 +128,18 @@ Data is stored in the `rch_data` volume and survives container restarts and imag
 | `RCH_INTERNAL_API_KEY` | — | Service-to-service key for push notifications |
 | `RCH_MEMPROF_ENABLED` | `false` | Enable the built-in memory profiler (see [Memory Profiling](#memory-profiling)) |
 | `RCH_MEMPROF_TOKEN` | — | Shared secret required to reach the `/api/debug/memory/*` routes in production |
+| `RCH_CONNECTOR_SEND_CONCURRENCY` | `8` | Maximum concurrent sends per source connector |
+| `RCH_CONNECTOR_SEND_MAX_WAITERS` | `32` | Maximum queued sends per source connector |
+| `RCH_CONNECTOR_SEND_WAIT_TIMEOUT_MS` | `250` | Connector send admission timeout |
+| `RCH_BINDING_PROCESS_CONCURRENCY` | `4` | Maximum concurrent binding operations |
+| `RCH_BINDING_PROCESS_MAX_WAITERS` | `32` | Maximum queued binding operations |
+| `RCH_BINDING_PROCESS_WAIT_TIMEOUT_MS` | `250` | Binding operation admission timeout |
+| `RCH_BINDING_INBOUND_ENDPOINT_CONCURRENCY` | `8` | Maximum endpoints processing inbound data concurrently |
+| `RCH_BINDING_INBOUND_QUEUE_SIZE` | `32` | Maximum pending inbound events per endpoint |
+| `RCH_REALTIME_OUTBOX_CRITICAL_SIZE` | `64` | Per-connection ordered critical-message queue size |
+| `RCH_REALTIME_OUTBOX_STATE_KEYS` | `256` | Per-connection pending state-key limit |
+| `RCH_REALTIME_SEND_TIMEOUT_MS` | `5000` | WebSocket socket-write timeout |
+| `RCH_REALTIME_BROADCAST_CONCURRENCY` | `16` | Maximum concurrent fan-out sends |
 
 ## Monitoring (Prometheus)
 
@@ -162,6 +174,9 @@ networks:
 **Available metrics:**
 - `rch_realtime_connections_active` — active WebSocket connections
 - `rch_realtime_messages_total` — WS messages by direction and type
+- `rch_realtime_pipeline_phase_duration_seconds` — latency by bounded realtime phase and outcome
+- `rch_realtime_backpressure_events_total` — queue, rejection, coalescing, timeout, and disconnect decisions
+- `rch_realtime_backpressure_depth` — aggregate active and pending realtime work
 - `rch_source_connector_state` — connector status (1 = connected, 0 = down)
 - `rch_auth_login_attempts_total` — login attempts by outcome
 - `http_requests_total` — HTTP requests by handler, method, status
@@ -334,6 +349,7 @@ Change language in the sidebar → Settings → Language.
 - [API Keys](docs/api-keys.md) — scopes, creation, rotation
 - [Workspace Sharing](docs/workspace-sharing.md) — invite members, assign roles
 - [RTSP Stream Proxy](docs/rtsp-proxy.md) — view IP cameras in the browser
+- [Realtime Performance Verification](docs/realtime-performance.md) — reproducible load, saturation, fan-out, and soak results
 - [Security](docs/security.md) — lockout, password policy, JWT rotation
 - [Upgrading](docs/upgrading.md) — how to update to a new version
 - [Reverse Proxy](docs/reverse-proxy.md) — HTTPS with Caddy/Nginx/Traefik
