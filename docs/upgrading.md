@@ -71,13 +71,17 @@ services:
 
 ## ARM64 (Jetson / Raspberry Pi)
 
-```bash
-docker compose pull  # pulls the correct architecture automatically
+ARM64 is published under a separate tag. Ensure your Compose file uses it before pulling:
+
+```yaml
+services:
+  rch:
+    image: ghcr.io/kwaadx/rch:latest-arm64
 ```
 
-Or explicitly:
-```yaml
-image: ghcr.io/kwaadx/rch:latest-arm64
+```bash
+docker compose pull
+docker compose up -d
 ```
 
 ## Troubleshooting Upgrades

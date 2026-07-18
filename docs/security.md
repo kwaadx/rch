@@ -16,7 +16,7 @@ After 5 failed login attempts, the account is locked for 15 minutes. The lockout
 
 > **Tip:** If you lock yourself out, wait 15 minutes or use the CLI to reset:
 > ```bash
-> docker exec -it rch python -m src.cli reset-password
+> docker exec -it -w /app/api rch /opt/rch-api/bin/python -m src.cli reset-password
 > ```
 
 ## Password Policy

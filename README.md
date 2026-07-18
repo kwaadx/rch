@@ -322,14 +322,14 @@ docker exec rch bash -c 'gunzip -c /var/lib/rch/backups/pg_YYYYMMDD_HHMMSS.sql.g
 ## User Management (CLI)
 
 ```bash
-docker exec rch python -m src.cli --help              # show all commands
-docker exec -it rch python -m src.cli create-user     # create user (interactive)
-docker exec -it rch python -m src.cli reset-password  # reset password
-docker exec -it rch python -m src.cli delete-user     # delete user
-docker exec -it rch python -m src.cli update-user     # update name
-docker exec -it rch python -m src.cli activate-user   # re-enable account
-docker exec -it rch python -m src.cli deactivate-user # disable account
-docker exec rch python -m src.cli list-users          # list all users (non-interactive)
+docker exec -w /app/api rch /opt/rch-api/bin/python -m src.cli --help              # show all commands
+docker exec -it -w /app/api rch /opt/rch-api/bin/python -m src.cli create-user     # create user (interactive)
+docker exec -it -w /app/api rch /opt/rch-api/bin/python -m src.cli reset-password  # reset password
+docker exec -it -w /app/api rch /opt/rch-api/bin/python -m src.cli delete-user     # delete user
+docker exec -it -w /app/api rch /opt/rch-api/bin/python -m src.cli update-user     # update name
+docker exec -it -w /app/api rch /opt/rch-api/bin/python -m src.cli activate-user   # re-enable account
+docker exec -it -w /app/api rch /opt/rch-api/bin/python -m src.cli deactivate-user # disable account
+docker exec -w /app/api rch /opt/rch-api/bin/python -m src.cli list-users          # list all users (non-interactive)
 ```
 
 > **Note:** Interactive commands require `-it` flags. `list-users` works without them.
