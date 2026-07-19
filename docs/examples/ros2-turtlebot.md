@@ -1,6 +1,8 @@
 # Example: ROS2 TurtleBot Control with Joystick + Camera
 
-Control a TurtleBot3 (or any ROS2 robot) from RCH — joystick for movement, live camera stream, battery indicator, and emergency stop.
+Control a TurtleBot3 (or any ROS2 robot) from RCH — joystick for movement, live camera stream, battery indicator, and a browser stop command.
+
+> **Safety:** The stop widget below only publishes a zero-velocity command through the application stack. It is not a safety-rated emergency stop. Use controller-level watchdogs, motion timeouts, hardware interlocks, and a physical E-stop wherever failure could cause harm.
 
 ## Architecture
 

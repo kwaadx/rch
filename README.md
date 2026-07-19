@@ -1,35 +1,41 @@
 # RCH — Realtime Control Hub
 
-**Self-hosted control dashboard for robotics and IoT. Zero frontend code required.**
+**A self-hosted browser control station for robots and connected hardware.**
 
-You build the backend — MQTT brokers, REST APIs, WebSocket streams, ROS 2 nodes. RCH gives you the control panel: drag widgets onto pages, bind them to your endpoints, and have a production-ready dashboard in minutes instead of weeks.
+Put RCH on a Jetson, Raspberry Pi, laptop, or local server. Add live video, a joystick, buttons, setpoints, and telemetry; connect them to ROS 2, MQTT, REST, or WebSocket; then open a browser and control the machine. No separate frontend project required.
 
-Free and open-source. MIT licensed. One Docker command.
+**Build the machine, not the control app.** Free to self-host, distributed under the MIT license, and deployed with one Docker command.
 
 🌐 [Live Demo](https://demo.rch.kwaad.cloud) · 🏠 [Website](https://rch.kwaad.cloud) · 💬 [Discord](https://discord.gg/ptCvyXAAnV) · 📝 [Issues](https://github.com/kwaadx/rch/issues)
 
 ![RCH Demo](demo.gif)
 
-![RCH Dashboard](docs/images/getting-started-dashboard.png)
+## From Hardware to a Control Station
 
-## Why RCH
+A joystick and a video player are easy to prototype. A control station that reconnects, keeps state synchronized, survives long sessions, controls access, and works across devices is a separate software project.
 
-- **42 widget types** — buttons, joysticks, sliders, gauges, video streams, charts, data tables, and more
-- **4 protocol connectors** — REST, MQTT, WebSocket, ROS 2 in one dashboard
-- **AI-powered setup (MCP)** — built into the image; connect Kiro, Claude, Cursor, Windsurf, or Continue.dev and build dashboards through natural language
-- **13 data transforms** — scale, deadzone, lowpass filter, clamp, map_range, chain them together
-- **ACK-confirmed commands** — know your hardware actually executed the command (fire / ack / submit modes)
-- **RBAC** — admin, editor, operator, viewer — workspace-scoped. Operators can't break config.
-- **13 languages**, PWA, works on desktop and mobile
-- **Self-hosted** — your data stays on your network. No cloud, no subscription, no telemetry.
+RCH packages that reusable layer:
 
-## Who Is This For
+- **Control + media + telemetry** — joysticks, D-pads, buttons, live streams, gauges, charts, tables, and more in one operator view
+- **Runs beside the machine** — AMD64 and ARM64 images for servers, laptops, Jetson, and Raspberry Pi
+- **4 protocol connectors** — REST, MQTT, WebSocket, and ROS 2 behind the same widget binding model
+- **Visual control-station builder** — arrange 42 reusable widgets for a laptop, tablet, phone, or built-in display
+- **Command feedback** — fire-and-forget, transport ACK, or execution confirmation by matching reported state
+- **Application plumbing included** — authentication, sessions, workspace RBAC, rate limits, audit logs, reconnect behavior, and persisted layouts
+- **AI-assisted configuration (MCP)** — 37 tools for creating sources, endpoints, widgets, and bindings from supported AI clients
+- **Local-first** — no cloud service, subscription, or telemetry required
 
-**Hardware hobbyists** — You have a Raspberry Pi project with MQTT endpoints and an ugly `index.html` with one button. RCH replaces weeks of frontend work with 15 minutes of configuration.
+## What You Can Build
 
-**Students & educators** — Your TurtleBot drives but you need a proper control panel for the demo, not a terminal with ROS topics. Set up in 15 minutes, looks professional.
+**Robot or rover cockpit** — Put a camera, joystick, battery, connection state, and drive controls in one browser view.
 
-**Small businesses** — Your operator needs to press "Water" on a tablet and see confirmation. You need RBAC, audit logs, and ACK — without hiring a frontend developer.
+**R&D or hardware test bench** — Reuse a panel for actuators, sensors, setpoints, logs, and live measurements instead of writing another throwaway UI.
+
+**Robotics lab interface** — Give a TurtleBot, Jetson project, or classroom robot a control surface that opens on existing laptops and tablets.
+
+**Connected-device controller** — Use the same widgets for lighting, irrigation, home-built automation, or anything exposed through REST, MQTT, or WebSocket.
+
+> RCH is an application-level control interface, not a functional-safety system. Hardware interlocks, watchdogs, command timeouts, and emergency stops belong in the machine or lower-level controller.
 
 ## Quick Start
 
