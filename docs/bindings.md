@@ -128,13 +128,17 @@ RCH is smart about resource usage. When no one is viewing a dashboard:
 
 **Override:** Endpoints with `history_size > 0` always run at full speed (they need to collect data even when no one is watching).
 
-**Disable per-protocol:**
+**Keep subscriptions active at zero demand:**
 ```yaml
 environment:
-  RCH_MQTT_BACKGROUND_ENABLED: "off"   # Never suspend MQTT
-  RCH_WS_BACKGROUND_ENABLED: "off"     # Never suspend WebSocket
-  RCH_ROS2_BACKGROUND_ENABLED: "off"   # Never suspend ROS2
+  RCH_MQTT_BACKGROUND_ENABLED: "on"   # Keep MQTT subscribed
+  RCH_WS_BACKGROUND_ENABLED: "on"     # Keep WebSocket subscribed
+  RCH_ROS2_BACKGROUND_ENABLED: "on"   # Keep ROS2 subscribed
 ```
+
+The default `edge` profile uses `off` and suspends these subscriptions until a
+browser needs them. The `balanced` profile uses `on`. Endpoints with
+`history_size > 0` remain active in either profile.
 
 ## Outbound Bindings (Commands)
 

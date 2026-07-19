@@ -14,10 +14,10 @@ Set these environment variables to enable push notifications:
 
 | Variable | Description |
 |----------|-------------|
-| `VAPID_PUBLIC_KEY` | VAPID public key (base64url) |
-| `VAPID_PRIVATE_KEY` | VAPID private key (base64url) |
-| `VAPID_CONTACT_EMAIL` | Contact email for VAPID (e.g. `mailto:you@example.com`) |
-| `INTERNAL_API_KEY` | Secret key for service-to-service auth |
+| `RCH_VAPID_PUBLIC_KEY` | VAPID public key (base64url) |
+| `RCH_VAPID_PRIVATE_KEY` | VAPID private key (base64url) |
+| `RCH_VAPID_CONTACT_EMAIL` | Contact email for VAPID (e.g. `mailto:you@example.com`) |
+| `RCH_INTERNAL_API_KEY` | Secret key for service-to-service auth |
 
 Generate VAPID keys:
 
@@ -35,7 +35,7 @@ POST /api/push-subscription/notify
 
 ### Authentication
 
-Use the `X-API-Key` header with the value of your `INTERNAL_API_KEY` environment variable.
+Use the `X-API-Key` header with the value of your `RCH_INTERNAL_API_KEY` environment variable.
 
 ```bash
 curl -X POST http://localhost:19580/api/push-subscription/notify \

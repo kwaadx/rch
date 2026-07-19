@@ -71,11 +71,13 @@ During the transition window, RCH accepts tokens signed with either key.
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `RCH_COOKIE_SECURE` | `true` | Require HTTPS for cookies |
-| `RCH_COOKIE_SAMESITE` | `Strict` | SameSite attribute |
+| `RCH_PUBLIC_URL` | `http://localhost:19580` | External origin; HTTPS derives secure cookies |
+| `RCH_COOKIE_SECURE` | derived | `true` for HTTPS `RCH_PUBLIC_URL`, otherwise `false` |
+| `RCH_COOKIE_SAMESITE` | `strict` | SameSite attribute |
 | `RCH_COOKIE_DOMAIN` | *(auto)* | Cookie domain |
 
-> **Local development:** Set `RCH_COOKIE_SECURE=false` when accessing via `http://localhost`.
+> Set `RCH_PUBLIC_URL` to the real HTTPS origin in production. Override the
+> individual cookie variables only for an exceptional proxy topology.
 
 ## Audit Logging
 

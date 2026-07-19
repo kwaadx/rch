@@ -15,7 +15,9 @@ docker compose pull
 docker compose up -d
 ```
 
-That's it. Database migrations run automatically on startup.
+That's it. Database migrations run automatically on startup. `docker compose up -d`
+recreates the container when its image or environment changes; `docker restart`
+alone does not apply new environment values.
 
 ## What Happens on Startup
 
@@ -71,7 +73,10 @@ services:
 
 ## ARM64 (Jetson / Raspberry Pi)
 
-ARM64 is published under a separate tag. Ensure your Compose file uses it before pulling:
+ARM64 is published under a separate tag. Architecture tags may be built and
+published at different times, so verify the intended release/digest before
+pulling; do not assume `latest-arm64` is synchronized with amd64 `latest`.
+Then select the ARM64 tag explicitly:
 
 ```yaml
 services:

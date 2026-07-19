@@ -4,15 +4,17 @@ Run RCH behind a reverse proxy with TLS termination. Covers Caddy, Nginx, and Tr
 
 ## RCH Environment Variables
 
-When behind a reverse proxy, set these in your `docker-compose.yml`:
+Set the externally reachable origin. RCH derives credentialed CORS, secure
+cookies, and MCP metadata from this single value:
 
 ```yaml
 environment:
-  RCH_COOKIE_SECURE: "true"
-  RCH_COOKIE_SAMESITE: "Lax"
-  RCH_CORS_ORIGINS: "https://rch.example.com"
+  RCH_PUBLIC_URL: "https://rch.example.com"
   RCH_TRUSTED_PROXIES: "172.16.0.0/12"  # Docker network CIDR
 ```
+
+Use `RCH_CORS_ORIGINS` or `RCH_COOKIE_SECURE` only when the proxy topology
+requires an explicit override.
 
 ## Important: WebSocket Support
 
@@ -46,8 +48,7 @@ services:
   rch:
     image: ghcr.io/kwaadx/rch:latest
     environment:
-      RCH_COOKIE_SECURE: "true"
-      RCH_CORS_ORIGINS: "https://rch.example.com"
+      RCH_PUBLIC_URL: "https://rch.example.com"
       RCH_TRUSTED_PROXIES: "172.16.0.0/12"
     volumes:
       - rch_data:/var/lib/rch
@@ -89,8 +90,7 @@ services:
   rch:
     image: ghcr.io/kwaadx/rch:latest
     environment:
-      RCH_COOKIE_SECURE: "true"
-      RCH_CORS_ORIGINS: "https://rch.example.com"
+      RCH_PUBLIC_URL: "https://rch.example.com"
       RCH_TRUSTED_PROXIES: "172.16.0.0/12"
     volumes:
       - rch_data:/var/lib/rch
@@ -178,8 +178,7 @@ services:
       - "traefik.http.routers.rch.tls.certresolver=letsencrypt"
       - "traefik.http.services.rch.loadbalancer.server.port=19580"
     environment:
-      RCH_COOKIE_SECURE: "true"
-      RCH_CORS_ORIGINS: "https://rch.example.com"
+      RCH_PUBLIC_URL: "https://rch.example.com"
       RCH_TRUSTED_PROXIES: "172.16.0.0/12"
     volumes:
       - rch_data:/var/lib/rch
@@ -207,8 +206,7 @@ cloudflared tunnel run --url http://localhost:19580 rch
 
 Set in RCH:
 ```yaml
-RCH_COOKIE_SECURE: "true"
-RCH_CORS_ORIGINS: "https://rch.example.com"
+RCH_PUBLIC_URL: "https://rch.example.com"
 ```
 
 > ⚠️ Cloudflare has a 100-second timeout on WebSocket idle connections. RCH's heartbeat (every 1s) keeps the connection alive, so this shouldn't be an issue.
@@ -239,7 +237,7 @@ Expected: `101 Switching Protocols`
 | Problem | Fix |
 |---------|-----|
 | WebSocket disconnects | Increase proxy timeout (`proxy_read_timeout 86400s` in Nginx) |
-| Login redirect loop | Set `RCH_COOKIE_SECURE=true` and `RCH_CORS_ORIGINS` correctly |
+| Login redirect loop | Set `RCH_PUBLIC_URL` to the exact external HTTPS origin |
 | 502 Bad Gateway | RCH container not running or wrong service name in proxy config |
-| Mixed content warnings | Ensure all traffic goes through HTTPS, check `RCH_CORS_ORIGINS` |
-| CSRF token mismatch | Set `RCH_COOKIE_SAMESITE=Lax` and correct `RCH_COOKIE_DOMAIN` |
+| Mixed content warnings | Ensure all traffic uses the `RCH_PUBLIC_URL` HTTPS origin |
+| CSRF token mismatch | Verify `RCH_PUBLIC_URL`; override cookie domain/SameSite only when required |

@@ -38,11 +38,13 @@ Free and open-source. MIT licensed. One Docker command.
 services:
   rch:
     image: ghcr.io/kwaadx/rch:latest        # amd64 (Intel/AMD)
-    # image: ghcr.io/kwaadx/rch:latest-arm64 # arm64 (Jetson, Raspberry Pi)
     ports:
       - "19580:19580"
     volumes:
       - rch_data:/var/lib/rch
+    environment:
+      # Keep localhost for local HTTP; use the real HTTPS origin when remote.
+      RCH_PUBLIC_URL: "http://localhost:19580"
     restart: unless-stopped
 
 volumes:
@@ -55,6 +57,11 @@ volumes:
 |---|---|---|
 | **amd64** (x86_64) | `ghcr.io/kwaadx/rch:latest` | Desktop, server, cloud VMs |
 | **arm64** (aarch64) | `ghcr.io/kwaadx/rch:latest-arm64` | Jetson Orin/Nano, Raspberry Pi 4/5 |
+
+> Architecture tags are published independently. Before an ARM64 upgrade,
+> verify that the selected tag/release matches the version you intend to run;
+> do not assume `latest-arm64` has the same digest or publication time as
+> `latest`.
 
 ```bash
 docker compose up -d
@@ -89,57 +96,39 @@ Data is stored in the `rch_data` volume and survives container restarts and imag
 
 ## Environment Variables
 
+The all-in-one image accepts supported production overrides through the
+`RCH_*` namespace. `RCH_PUBLIC_URL` is the primary networking input: it derives
+CORS, secure-cookie behavior, and MCP metadata. Explicit container values win
+over resource-profile defaults.
+
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `RCH_COOKIE_SECURE` | `false` | `true` when behind HTTPS |
-| `RCH_COOKIE_SAMESITE` | `Lax` | `Lax` / `Strict` / `None` |
-| `RCH_COOKIE_DOMAIN` | *(auto)* | Cookie domain override |
-| `RCH_JWT_SECRET_KEY` | *(auto)* | Auto-generated, persisted in volume |
-| `RCH_JWT_TOKEN_EXPIRE_MINUTES` | `30` | Access token TTL |
-| `RCH_SESSION_MAX_CONCURRENT` | `5` | Max sessions per user |
-| `RCH_SESSION_REFRESH_TOKEN_EXPIRE_DAYS` | `30` | Refresh token TTL |
-| `RCH_AUDIT_RETENTION_DAYS` | `90` | Days to keep audit log entries (1–365) |
-| `RCH_INTEGRATION_LOG_RETENTION_DAYS` | `7` | Days to keep integration log entries (1–90) |
-| `RCH_SYSTEM_LOG_RETENTION_DAYS` | `30` | Days to keep system log entries (1–365) |
-| `RCH_CORS_ORIGINS` | `http://localhost:19580` | Allowed origins (comma-separated) |
-| `RCH_VAPID_PUBLIC_KEY` | — | Push notifications |
-| `RCH_VAPID_PRIVATE_KEY` | — | Push notifications |
-| `RCH_VAPID_CONTACT_EMAIL` | — | Push notifications |
+| `RCH_PUBLIC_URL` | `http://localhost:19580` | External origin without a path; set the real HTTPS origin for remote access |
+| `RCH_RESOURCE_PROFILE` | `edge` | `edge` or `balanced`; individual overrides win |
+| `RCH_API_WORKERS` | `1` | Keep `1`; connector/cache/runtime reload state is process-local |
+| `RCH_JWT_SECRET_KEY` | *(generated)* | Persisted signing key; explicit production values need at least 32 bytes |
+| `RCH_POSTGRES_PASSWORD` | *(generated)* | Embedded PostgreSQL password, persisted in the volume |
+| `RCH_REDIS_PASSWORD` | *(generated)* | Embedded Redis password, persisted in the volume |
+| `RCH_DATABASE_URL` | *(empty)* | External PostgreSQL URL; disables embedded PostgreSQL |
+| `RCH_REDIS_URL` | *(generated local URL)* | Explicit external Redis URL; disables embedded Redis |
+| `RCH_CORS_ORIGINS` | `RCH_PUBLIC_URL` | Optional comma-separated browser-origin override |
+| `RCH_COOKIE_SECURE` | *(derived)* | `true` for HTTPS `RCH_PUBLIC_URL`, otherwise `false` |
+| `RCH_TRUSTED_PROXIES` | *(empty)* | Trusted reverse-proxy IPs/CIDRs |
+| `RCH_ALLOW_PRIVATE_HOSTS` | `true` | Allow private-network robot/IoT source URLs |
 | `RCH_API_ENABLE_DOCS` | `false` | Enable Swagger UI at `/api/docs` |
-| `RCH_MCP_ENABLE` | `true` | Enable MCP server at `/mcp` |
-| `RCH_LOG_LEVEL` | *(auto)* | Override log level (`DEBUG` / `INFO` / `WARNING` / `ERROR`) |
-| `RCH_API_WORKERS` | `1` | Uvicorn worker count (>1 requires `RCH_BINDING_STATE_BACKEND=redis`) |
-| `RCH_SKIP_SEED` | — | Set `true` to skip Getting Started demo data on first run |
-| `RCH_POSTGRES_PASSWORD` | *(auto)* | PostgreSQL password (auto-generated, persisted in volume) |
-| `RCH_DATABASE_URL` | *(internal)* | External PostgreSQL URL (overrides built-in) |
-| `RCH_REDIS_URL` | *(internal)* | External Redis URL (overrides built-in) |
-| `RCH_TRUSTED_PROXIES` | — | Reverse proxy CIDR (e.g. `172.16.0.0/12`) |
-| `RCH_DEMO_MODE` | `false` | Read-only mode (blocks all mutations) |
-| `RCH_MODE` | `dev` | Runtime mode: `dev`, `prod`, or `test` |
-| `RCH_ALLOW_PRIVATE_HOSTS` | `true` | Allow source connections to private IPs (192.168.x.x, 10.x.x) |
-| `RCH_LOCKOUT_ENABLED` | `true` | Enable account lockout after failed logins |
-| `RCH_LOCKOUT_MAX_ATTEMPTS` | `5` | Failed attempts before lockout |
-| `RCH_LOCKOUT_DURATION_MINUTES` | `15` | Lockout duration |
-| `RCH_PASSWORD_MIN_LENGTH` | `8` | Minimum password length |
-| `RCH_JWT_PREVIOUS_SECRET_KEY` | — | Previous JWT key (for zero-downtime rotation) |
-| `RCH_MQTT_BACKGROUND_ENABLED` | `on` | `off` to keep MQTT always connected |
-| `RCH_WS_BACKGROUND_ENABLED` | `on` | `off` to keep WebSocket always connected |
-| `RCH_ROS2_BACKGROUND_ENABLED` | `on` | `off` to keep ROS2 always connected |
-| `RCH_INTERNAL_API_KEY` | — | Service-to-service key for push notifications |
-| `RCH_MEMPROF_ENABLED` | `false` | Enable the built-in memory profiler (see [Memory Profiling](#memory-profiling)) |
-| `RCH_MEMPROF_TOKEN` | — | Shared secret required to reach the `/api/debug/memory/*` routes in production |
-| `RCH_CONNECTOR_SEND_CONCURRENCY` | `8` | Maximum concurrent sends per source connector |
-| `RCH_CONNECTOR_SEND_MAX_WAITERS` | `32` | Maximum queued sends per source connector |
-| `RCH_CONNECTOR_SEND_WAIT_TIMEOUT_MS` | `250` | Connector send admission timeout |
-| `RCH_BINDING_PROCESS_CONCURRENCY` | `4` | Maximum concurrent binding operations |
-| `RCH_BINDING_PROCESS_MAX_WAITERS` | `32` | Maximum queued binding operations |
-| `RCH_BINDING_PROCESS_WAIT_TIMEOUT_MS` | `250` | Binding operation admission timeout |
-| `RCH_BINDING_INBOUND_ENDPOINT_CONCURRENCY` | `8` | Maximum endpoints processing inbound data concurrently |
-| `RCH_BINDING_INBOUND_QUEUE_SIZE` | `32` | Maximum pending inbound events per endpoint |
-| `RCH_REALTIME_OUTBOX_CRITICAL_SIZE` | `64` | Per-connection ordered critical-message queue size |
-| `RCH_REALTIME_OUTBOX_STATE_KEYS` | `256` | Per-connection pending state-key limit |
-| `RCH_REALTIME_SEND_TIMEOUT_MS` | `5000` | WebSocket socket-write timeout |
-| `RCH_REALTIME_BROADCAST_CONCURRENCY` | `16` | Maximum concurrent fan-out sends |
+| `RCH_LOG_LEVEL` | `WARNING` | API log level |
+| `RCH_METRICS_ENABLED` | `true` | Enable Prometheus `/metrics` |
+| `RCH_MCP_ENABLE` | `true` | Enable bundled MCP; disabling saves about 43–44 MiB cgroup RAM |
+| `RCH_MCP_PUBLIC_URL` | `${RCH_PUBLIC_URL}/mcp` | Optional public MCP resource URL override |
+| `RCH_MCP_ISSUER_URL` | `${RCH_PUBLIC_URL}/api` | Optional MCP issuer/API metadata override |
+| `RCH_MCP_LOG_LEVEL` | `INFO` | Bundled MCP log level |
+| `RCH_SKIP_SEED` | `false` | Skip Getting Started seed data |
+| `RCH_DEMO_MODE` | `false` | Read-only mode that blocks mutations |
+
+See the complete [environment contract](docs/environment.md) for namespaces,
+precedence, edge/balanced profile values, advanced settings, and compatibility
+aliases. Generic `POSTGRES_*` and `MCP_*` names are internal adapters, not
+all-in-one image inputs.
 
 ## Monitoring (Prometheus)
 
@@ -182,7 +171,7 @@ networks:
 - `http_requests_total` — HTTP requests by handler, method, status
 - `http_request_duration_seconds` — request latency histogram
 
-Set `METRICS_ENABLED=false` to disable the endpoint entirely.
+Set `RCH_METRICS_ENABLED=false` to disable the endpoint entirely.
 
 ## Memory Profiling
 
@@ -342,6 +331,7 @@ Change language in the sidebar → Settings → Language.
 
 ## Documentation
 
+- [Environment Variables](docs/environment.md) — production namespaces, precedence, profiles, and operator settings
 - [Getting Started](docs/getting-started.md) — zero to live data in 10 minutes
 - [Widget Catalog](docs/widgets.md) — all 42 widget types with ports
 - [Bindings Guide](docs/bindings.md) — connecting widgets to data (directions, payload_path, history, ACK)

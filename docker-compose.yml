@@ -1,112 +1,112 @@
 services:
   rch:
-    ## Platform images:
+    ## Platform images are published independently. Verify the release/digest
+    ## for your architecture before upgrading, especially on Jetson/RPi.
     ##   amd64 (Intel/AMD):  ghcr.io/kwaadx/rch:latest
     ##   arm64 (Jetson/RPi): ghcr.io/kwaadx/rch:latest-arm64
     image: ghcr.io/kwaadx/rch:latest
     ports:
-      - "${RCH_WEB_PORT:-19580}:19580"
+      # WEB_PORT is a host-side Compose input, not an image runtime variable.
+      - "${WEB_PORT:-19580}:19580"
     volumes:
       - rch_data:/var/lib/rch
     environment:
-      ## ─── Authentication ───────────────────────────────────────────────
-      ## JWT secret (auto-generated and persisted in volume if not set)
-      # RCH_JWT_SECRET_KEY: "your-secret-key"
-      # RCH_JWT_TOKEN_EXPIRE_MINUTES: "30"
+      ## ─── Public origin & profile ───────────────────────────────────────
+      ## Set the externally reachable origin. HTTPS automatically derives
+      ## secure cookies; CORS and MCP metadata derive from the same value.
+      RCH_PUBLIC_URL: "${RCH_PUBLIC_URL:-http://localhost:19580}"
+      RCH_RESOURCE_PROFILE: "${RCH_RESOURCE_PROFILE:-edge}"
 
-      ## Session
+      ## Keep one worker: connector/cache/runtime reload state is process-local.
+      RCH_API_WORKERS: "1"
+
+      ## Optional explicit networking overrides. Usually RCH_PUBLIC_URL is enough.
+      # RCH_CORS_ORIGINS: "https://dashboard.example.com"
+      # RCH_COOKIE_SECURE: "true"
+      # RCH_COOKIE_SAMESITE: "strict"
+      # RCH_COOKIE_DOMAIN: ""
+      # RCH_TRUSTED_PROXIES: "172.16.0.0/12"
+
+      ## ─── Authentication ───────────────────────────────────────────────
+      ## JWT secret is auto-generated and persisted when omitted.
+      # RCH_JWT_SECRET_KEY: "use-at-least-32-random-bytes"
+      # RCH_JWT_PREVIOUS_SECRET_KEY: ""
+      # RCH_JWT_TOKEN_EXPIRE_MINUTES: "30"
       # RCH_SESSION_MAX_CONCURRENT: "5"
       # RCH_SESSION_REFRESH_TOKEN_EXPIRE_DAYS: "30"
 
-      ## Cookie
-      RCH_COOKIE_SECURE: "false"        # true when behind HTTPS
-      RCH_COOKIE_SAMESITE: "Lax"
-      # RCH_COOKIE_DOMAIN: ""
-
-      ## ─── Networking ───────────────────────────────────────────────────
-      ## CORS (defaults to http://localhost:19580; set to your domain when behind reverse proxy)
-      # RCH_CORS_ORIGINS: "https://dashboard.example.com"
-
-      ## Trusted reverse proxy IPs (CIDR notation, comma-separated)
-      # RCH_TRUSTED_PROXIES: "172.16.0.0/12"
-
       ## ─── Database & Redis ─────────────────────────────────────────────
-      ## PostgreSQL password (auto-generated and persisted if not set)
+      ## Embedded passwords are generated and persisted when omitted.
       # RCH_POSTGRES_PASSWORD: "your-secure-password"
+      # RCH_REDIS_PASSWORD: "your-secure-password"
 
-      ## External database (overrides built-in PostgreSQL)
+      ## Explicit URLs disable only the corresponding embedded daemon.
       # RCH_DATABASE_URL: "postgresql://user:pass@host:5432/rch"
-
-      ## External Redis (overrides built-in Redis)
       # RCH_REDIS_URL: "redis://:password@host:6379/0"
 
-      ## ─── Log Retention ────────────────────────────────────────────────
+      ## ─── MCP ──────────────────────────────────────────────────────────
+      ## Enabled by default at ${RCH_PUBLIC_URL:-http://localhost:19580}/mcp.
+      # RCH_MCP_ENABLE: "false"
+      # RCH_MCP_PUBLIC_URL: "https://your-domain.example/mcp"
+      # RCH_MCP_ISSUER_URL: "https://your-domain.example/api"
+      # RCH_MCP_LOG_LEVEL: "INFO"
+
+      ## ─── Resource overrides ───────────────────────────────────────────
+      ## edge defaults shown; use RCH_RESOURCE_PROFILE=balanced for larger hosts.
+      # RCH_DB_POOL_MIN: "1"
+      # RCH_DB_POOL_MAX: "5"
+      # RCH_POSTGRES_SHARED_BUFFERS: "64MB"
+      # RCH_POSTGRES_MAX_CONNECTIONS: "20"
+      # RCH_POSTGRES_WORK_MEM: "2MB"
+      # RCH_POSTGRES_MAINTENANCE_WORK_MEM: "32MB"
+      # RCH_POSTGRES_JIT: "off"
+      # RCH_REDIS_MAXMEMORY: "128mb"
+      # RCH_REDIS_MAXMEMORY_POLICY: "allkeys-lru"
+
+      ## At zero demand, "off" suspends subscriptions; "on" keeps them active.
+      # RCH_REST_BACKGROUND_MIN_POLL_INTERVAL_MS: "5000"
+      # RCH_MQTT_BACKGROUND_ENABLED: "off"
+      # RCH_WS_BACKGROUND_ENABLED: "off"
+      # RCH_ROS2_BACKGROUND_ENABLED: "off"
+
+      # RCH_CONNECTOR_SEND_CONCURRENCY: "4"
+      # RCH_CONNECTOR_SEND_MAX_WAITERS: "16"
+      # RCH_CONNECTOR_SEND_WAIT_TIMEOUT_MS: "250"
+      # RCH_BINDING_PROCESS_CONCURRENCY: "2"
+      # RCH_BINDING_PROCESS_MAX_WAITERS: "16"
+      # RCH_BINDING_PROCESS_WAIT_TIMEOUT_MS: "250"
+      # RCH_BINDING_INBOUND_ENDPOINT_CONCURRENCY: "4"
+      # RCH_BINDING_INBOUND_QUEUE_SIZE: "16"
+      # RCH_REALTIME_OUTBOX_CRITICAL_SIZE: "32"
+      # RCH_REALTIME_OUTBOX_STATE_KEYS: "64"
+      # RCH_REALTIME_SEND_TIMEOUT_MS: "5000"
+      # RCH_REALTIME_BROADCAST_CONCURRENCY: "8"
+      # RCH_WS_MAX_QUEUE: "8"
+
+      ## Redis can share binding state, but cannot distribute runtime reloads.
+      # RCH_BINDING_STATE_BACKEND: "memory"
+      # RCH_BINDING_STATE_LOCK_WAIT_MS: "1000"
+      # RCH_ENDPOINT_STATE_BACKEND: "memory"
+      # RCH_ENDPOINT_STATE_TTL_S: "3600"
+      # RCH_ENDPOINT_STATE_STALE_THRESHOLD_S: "300"
+
+      ## ─── Retention, push, and observability ───────────────────────────
       # RCH_AUDIT_RETENTION_DAYS: "90"
       # RCH_INTEGRATION_LOG_RETENTION_DAYS: "7"
       # RCH_SYSTEM_LOG_RETENTION_DAYS: "30"
-
-      ## ─── Push Notifications ───────────────────────────────────────────
-      ## Generate keys: npx web-push generate-vapid-keys
       # RCH_VAPID_PUBLIC_KEY: ""
       # RCH_VAPID_PRIVATE_KEY: ""
       # RCH_VAPID_CONTACT_EMAIL: "mailto:admin@example.com"
-
-      ## ─── API & MCP ────────────────────────────────────────────────────
-      ## Internal API key (service-to-service auth)
       # RCH_INTERNAL_API_KEY: ""
-
-      ## Swagger/OpenAPI docs
-      # RCH_API_ENABLE_DOCS: "true"
-
-      ## MCP Server (AI assistant bridge)
-      ## Exposes Streamable HTTP MCP endpoint at /mcp. Generate an API key
-      ## in the RCH UI (sidebar → API Keys → Create Key), then paste the
-      ## URL + key into your AI tool's MCP config. Set to "false" to disable.
-      RCH_MCP_ENABLE: "true"
-      # RCH_MCP_PUBLIC_URL: "https://your-domain.com/mcp"
-
-      ## ─── Security ─────────────────────────────────────────────────────
-      ## Brute-force protection
-      # RCH_LOCKOUT_MAX_ATTEMPTS: "5"
-      # RCH_LOCKOUT_DURATION_MINUTES: "15"
-      # RCH_LOCKOUT_ENABLED: "true"
-
-      ## Password policy
-      # RCH_PASSWORD_MIN_LENGTH: "8"
-
-      ## ─── Performance Tuning ───────────────────────────────────────────
-      ## API workers (default 1; increase for multi-core, requires RCH_BINDING_STATE_BACKEND=redis)
-      # RCH_API_WORKERS: "1"
-
-      ## Log level override (DEBUG, INFO, WARNING, ERROR)
-      # RCH_LOG_LEVEL: "WARNING"
-
-      ## Skip Getting Started seed on first run
-      # RCH_SKIP_SEED: "true"
-
-      ## Connector demand-aware lifecycle
-      # RCH_REST_BACKGROUND_MIN_POLL_INTERVAL_MS: "1000"
-      # RCH_MQTT_BACKGROUND_ENABLED: "on"       # "off" = defer until UI subscriber
-      # RCH_WS_BACKGROUND_ENABLED: "on"
-      # RCH_ROS2_BACKGROUND_ENABLED: "on"
-
-      ## Database pool
-      # RCH_DB_POOL_MIN: "5"
-      # RCH_DB_POOL_MAX: "20"
-
-      ## ─── Observability ────────────────────────────────────────────────
-      # RCH_SENTRY_DSN: ""
       # RCH_METRICS_ENABLED: "true"
+      # RCH_SENTRY_DSN: ""
 
-      ## Memory profiler (opt-in; inert unless enabled). See README → Memory Profiling.
-      ## Routes: /api/debug/memory/{status,snapshot,history,redis,reset-baseline}
-      # RCH_MEMPROF_ENABLED: "1"           # turn the profiler on
-      # RCH_MEMPROF_TOKEN: "change-me"     # required to reach debug routes in prod
-      # RCH_MEMPROF_INTERVAL_S: "300"      # seconds between samples
-      # RCH_MEMPROF_SINKS: "stdout,redis"  # stdout | redis | file
-
-      ## ─── Demo Mode ────────────────────────────────────────────────────
-      ## Read-only mode (blocks all mutations via API)
+      ## ─── API, diagnostics, and demo ───────────────────────────────────
+      # RCH_API_ENABLE_DOCS: "true"
+      # RCH_LOG_LEVEL: "WARNING"
+      # RCH_SKIP_SEED: "true"
+      # RCH_MEMPROF_ENABLED: "1"
+      # RCH_MEMPROF_TOKEN: "change-me"
       # RCH_DEMO_MODE: "true"
     restart: unless-stopped
 

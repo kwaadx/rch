@@ -19,16 +19,23 @@ Create a `docker-compose.yml`:
 ```yaml
 services:
   rch:
-    image: ghcr.io/kwaadx/rch:latest  # use :latest-arm64 for Jetson/RPi
+    image: ghcr.io/kwaadx/rch:latest
     ports:
       - "19580:19580"
     volumes:
       - rch_data:/var/lib/rch
+    environment:
+      RCH_PUBLIC_URL: "http://localhost:19580"
     restart: unless-stopped
 
 volumes:
   rch_data:
 ```
+
+For remote HTTPS access, replace `RCH_PUBLIC_URL` with the exact external
+origin. ARM64 users can select `ghcr.io/kwaadx/rch:latest-arm64`, but should
+verify that the independently published architecture tag matches the intended
+release before upgrading.
 
 Start it:
 
